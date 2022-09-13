@@ -7,8 +7,8 @@
 - 7 More on Components[ok]
 - 8 Building Nested Components[ok]
 - 9 Services and Dependency Injection[ok]
-- 10 Retrieving Data Using HTTP
-- 11 Navigation and Routing Basics
+- 10 Retrieving Data Using HTTP[ok]
+- 11 Navigation and Routing Basics[ok]
 - 12 Navigation and Routing Additional Techniques
 - 13 Angular Modules
 - 14 Building, Testing, and Deploying with the CLI
