@@ -710,3 +710,62 @@ Implemente o ciclo de vida OnDestroy e use a variável de assinatura no método 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
+
+## Routings
+
+Um aplicativo Angular é um aplicativo SPA Single Page Application ou seja um aplicativo pagina unica.
+
+Configuramos uma rota para cada component que deseja exibir a sua visualização na página.
+Como parte do design de nosso aplicativo, fornecemos um menu, uma barra de ferramentas, botões, imagens , links de dados que permitem ao usuário selecionar a visualização a ser exibida.
+Amarramos uma rota a cada opção ou ação, ou seja quando o o usuario seleciona a opção ou executa a ação a rota associada é ativada.
+Ativando a rota de um component exibe a visualização desse component.
+
+Por padrão o angular usar URL'S no estilo HTML5 que não exibem o simbolo  de hash para indicar a nevegação local: www.web.com/products . Ao usar OS urls de estilo HTML5 vc precisa configurar seu servidor web para realizar a reescrita de URL. E isso depende de como funciona seu servidor web.
+Angular também suporta roteamento de estilo hash : www.web.com/#/products
+
+O modelo é exibido usando a diretiva de roteamento:  <router-outlet></router-outlet>
+
+Ex: <a a routerLink="/products">Product List</a>
+
+{ path: 'products' , component: ProductListComponent }
+
+qUANDO CLICAMOS NO BOTÃO: e aparece a url: www.web.com/products 
+
+O roteamento é baseado em componentes que queremos fornecer como alvos de roteamento e definimos uma rota para cada um.
+
+ex: 'products' ProductListComponent 
+    'products/id' ProductDetailComponent
+    'welcome' WelcomeComponent
+
+o Angular fornece  RouterModule no pacote do roteador angular, ele registra o provedor de serviços do roteador, ele também declara as diretivas do roteador.
+
+Existem duas diretivas do roteador: RouterLink e RouterOutlet ao importar o RouterModule teremos acesso a essas diretivas.
+- Router Module também expõe as rotas que configuramos.
+
+Para garantir que as rotas estão disponíveis para o aplicativo fazemos isso passando as rotas para RouterModule, assim: RouterModule.forRoot([]). Chamamos o método forRoot do RouterModule e passamos nossa matriz de rotas para esse método, isso estabelece  as rotas para a raiz de nosso aplicativo. Dessa forma podemos configurar algumas rotas .
+
+Configure Rotas
+
+[
+  { path:'products', component:ProductListComponet  },
+  { path:'products/id', component:ProductDetailComponet  },
+  { path:'', redirectTo: 'welcome', pathMatch:'full'  },
+  { path:'**', component:PageNotFoundComponent  }
+]
+
+o path-> este segmento de caminho de URL é anexado ao URL de nosso aplicativo.
+component-> associamos um component associado a rota  é o model deste componente que é exibido quando a rota é ativada.
+
+A primeira rota simplesmente mapeia um segmento de caminho de URL especifico para um component especifico.
+O id na segunda rota representa um parametro de rota, podemos definir qualquer numero de parametros separados por barras
+a terceira rota define uma rota padrão, o redirecionamento aqui traduz a rota vazia para o segmento de caminho padrão desejado, neste exemplo a rota welcome, uma rota de redirecionamento requer uma propriedade de pathMatch para informar ao roteador como combinar o segmento de caminho de URL com o caminho de uma rota, queremos essa rota padrão quando o lado do client estiver vazio. Então definimos pathMatch como full.
+
+Os asteriscos na ultima rota denotam um caminho curinga, o roteador corresponde a esta rota se o URL solicitado não corresponder a nenhum caminho na configuração. Isso é util para exibir uma página 404 not found ou redirecionar para outra rota.
+
+
+Com o roteamento , o usuario pode navegar pelo o aplicativo de várias maneiras. O usuário pode clicar em uma oppção de menu, link, imagem ou botão que ativa ou navega para uma rota.
+O usuároi pode digitar o segmento de URL associado na barra de endereço após o URL do aplicativo ou usar um marcador para esse URL. Ou pode clicar nos botões de avançar ou voltar do navegador.
+
+
+
+

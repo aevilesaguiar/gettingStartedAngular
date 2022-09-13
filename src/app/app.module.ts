@@ -7,6 +7,10 @@ import { AppComponent } from './app.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ConvertToSpacesPipe } from './product-list/convert-to-spaces.pipe';
 import { StarComponent } from './shared/star.component';
+import { ProductDetailComponent } from './product-list/product-detail.component';
+import { WelcomeComponent } from './home/welcome.component';
+import { RouterModule } from '@angular/router';
+
 
 //identificamos a classe como um módulo anexando o decorator @NgModule e passando os
 //metadados, para os necorator NgModule, as propriedade são matrizes
@@ -17,18 +21,22 @@ import { StarComponent } from './shared/star.component';
   declarations: [
     AppComponent,
     ProductListComponent,
+   WelcomeComponent,
     ConvertToSpacesPipe,
-    StarComponent
+    StarComponent,
+    ProductDetailComponent
 
   ],
-  //na matriz de importação definimos os módulos externos que queremos disponibilizar para todos
-  //aqui importamos o BrowserModule que todo aplicativo de navegador deve importar
-  //BrowserModule registra provedores de serviços de aplicaativos importantes
-  //como tratamento de erros
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule, RouterModule.forRoot([
+      { path:'products', component:ProductListComponent  },
+      { path:'products/id', component:ProductDetailComponent  },
+      { path:'welcome', component:WelcomeComponent  },
+      { path:'', redirectTo: 'welcome', pathMatch:'full'  },
+      { path:'**', redirectTo: 'welcome', pathMatch:'full' }
+    ])
   ],
   //a matriz bootstrap define o componente de inicialização do aplicativo
   //que é o nosso AppComponent
