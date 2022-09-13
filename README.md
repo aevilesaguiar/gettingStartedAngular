@@ -4,9 +4,9 @@
 - 4 Introduction to Components[ok]
 - 5 Templates, Interpolation, and Directives[ok]
 - 6 Data Binding & Pipes[ok]
-- 7 More on Components
-- 8 Building Nested Components
-- 9 Services and Dependency Injection
+- 7 More on Components[ok]
+- 8 Building Nested Components[ok]
+- 9 Services and Dependency Injection[ok]
 - 10 Retrieving Data Using HTTP
 - 11 Navigation and Routing Basics
 - 12 Navigation and Routing Additional Techniques
@@ -472,4 +472,53 @@ Use o componente aninhado como uma diretiva
 Use property Binding para passar dados ao component aninhado.[rating]
 Use event Binding para responder a eventos do component aninhado e use $ event para acessar os dados do evento passado ao component.
 
+
+## Services e dependencia de Injeção
+
+Construimos Services para incluir a lógica.
+Criamos um serviço e usamos injeção de dependencia para injetar esse serviço em qualquer componente que precise dele.
+
+Um service é uma classe com um propósito específico. Geralmente criamos um serviço para implementar a funcionalidade que é independente de qualquer componente específico, para compartilhar dados ou lógica entre componentes. Ou encapsular interações externas , como acesso a dados.
+Ao mudar essa responsabilidade do component para um serviço, o código fica mais fácil de testar, debuggar e reutilizar.
+
+A forma ideal para injetar dependencia é instanciá-la no construtor.
+
+Component
+
+constructor(private myService){
+
+}
+
+Dependency Injection(DI)
+é um padrão de codificação no qual uma classe recebe instancias dos objetos de que precisa, chamadas de dependencias, de uma fonte externa em vez de criá-los ela mesma.
+No angular , essa fonte externa é o injetor Angular .
+
+
+## Building a Service( criar classe de Serviço)
+
+- Crie a classe de serviço
+- Defina os metadados com um decorator e importe o que precisamos. @Injectable()
+
+## quando vc deve registrar seu serviço como um Injector root(raiz) ao invez de um Injector component?
+
+Root Injector-> o registro de serviço como raiz garante que o serviço esteja disponível em todo o aplicativo. Na maioria dos Cenários , será registrado como raiz.
+
+Component Injector: ele ficará disponível apenas para o seu component, a seus componentes filho ou aninhados.
+
+registramos no injectable que ele é um serviço root, ou seja está podemos acessar o serviço de qualquer component ou otro serviço do aplicativo.
+@Injectable({
+  providedIn: 'root'
+})
+
+
+se quisermos que o serviço esteja disponivel apenas para o componente e seus componentes filhos.
+
+
+
+@Component({
+  selector: 'pm-product-list',
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.css'],
+  providers:[ProductService]
+})
 
