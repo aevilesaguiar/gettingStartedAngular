@@ -2,8 +2,8 @@
 - 2 Introduction[ok]
 - 3 First Things First[ok]
 - 4 Introduction to Components[ok]
-- 5 Templates, Interpolation, and Directives
-- 6 Data Binding & Pipes
+- 5 Templates, Interpolation, and Directives[ok]
+- 6 Data Binding & Pipes[ok]
 - 7 More on Components
 - 8 Building Nested Components
 - 9 Services and Dependency Injection
@@ -319,3 +319,157 @@ Existem 4 tipos  básicos de Bindings no angular.
 Ao usar ngMode: defina ngModel dentro de [()] para ligação bidirecional
 Certifique-se de adicionar FormsModule do pacote formulários Angular ao array de importações de um módulo Angular apropriado.Isso garante que a diretiva ngModel esteja disponível para qualquer 
 modelo definido em um componente associado a esse modulo. Os dados que temos em nosso componente podem não estar no formato que desejamos para exibição e podemos usar o pipe em um modelo para transformar esses dados em um formato amigável.
+
+## Typescripting
+
+Um dos benefícios de usar o typescript é a tipagem forte. Toda propriedade tem um tipo, todo método tem um tipo de retorno e todo parametro tem um tipo. Temos também o exemplo de uma propriedade que não tem nenhum tipo como: products: any[]=[...].
+
+## Tipos personalizados( Strong typing)
+
+Para especificar tipos personalizados , podemos definir uma interface.
+
+Um interface é uma especificação que identifica um conjunto(set) com propriedades e métodos.
+Propriedades são os elementos de dados associados a classe, e os métodos executam a lógica necessária a classe.
+
+Existem duas formas de utilizar uma interface:
+
+Usando uma interface para identificar as propriedades como um tipo especifico(As a type)
+
+export interface IProduct{
+  productId: number;
+  productName: string;
+  productCode:string
+}
+
+As a type
+products: IProduct[]=[];
+
+A segunda maneira de usar uma interface é identificar um conjunto(set) de recursos. Declaramos as propriedades e métodos necessários para implementar um recurso específico. Ou seja apenas declarações , sem códigos.
+
+export interface DoTiming{
+  count: number;
+  start(index:number):void;
+  stop():void;
+}
+As a feature set (especificamos a interface usando a palavra chave implements, em seguida escrevemos o código para cada propriedade e método definido.)
+
+export class myComponent implements DoTiming{
+  count: number=0;
+  start(index:number):void{
+    ....
+  }
+  stop(): void{
+    .....
+  }
+}
+
+
+## Component Lifecycle
+
+Um component tem um ciclo de vida gerenciado pelo o angular.
+
+O lifecycle hook é uma interface fornecida pelo o angular para escrever código que é executado quando ocorre o evento. Ex quando o component é criado e inicializado pela primeira vez. Implementamos o lifeCycle hook onInit e escrevemos o código nesse método para obter nossos dados.
+
+Component LifeCycle Hooks :
+
+OnInit: para executar qualquer inicialização de component após o angular ter inicializado as propriedades vinculadas aos dados.Este é um bom 
+lugar para recuperar os dados do modelo de um serviço de backend.
+
+OnChanges: para executar qualquer ação após o angular definir a entrada de dados.
+
+OnDestroy: para realizar qualquer limpeza antes que o angular destrua o component.
+
+
+## Transformando Dados com Pipes
+
+Building a Custom Pipes
+
+import{ Pipe, PipeTransform } from 'angular/core';
+
+@Pipe({
+  name: 'convertToSpaces'
+})
+
+export class ConvertToSpacesPipe implements PipeTransform{
+  transform(value:string, character: string):string{
+
+    //valor que será convertido productCode
+
+
+
+  }
+}
+
+TEMPLATE
+<td> {{ product.productCode | convertToSpaces: '-' }}</td>
+
+
+## Getters and Setters
+
+Em JS e , portanto , em TS existem duas maneiras de definir uma propriedade em uma classe.
+
+Podemos declarar um variavel simples para uma propriedade.
+
+amount: number=0;
+
+ou usar getter e setter JS
+
+get amount():number{
+return this._amount;
+}
+set amount(value:number){
+  this._amount=value;
+}
+para definir que a variavel é privada usamos _ underscor
+
+
+Use um getter e setter sempre que desejar executar o código quando uma propriedade for obtida e definida.
+
+## Arrow function
+
+Arrow function tem uma sintaxe compacta para definir uma função. é mais frequentemente usado ao passar lógica para outra função ou método.
+
+Função classica 
+
+capitalizeName(product: IProduct): string{
+  return product.productName.toUpperCase();
+}
+
+Arrow Function
+(product: IProduct)=>product.productName.toUpperCase();
+
+
+## Usando um component
+
+Formas de usar um Component e exibir o model do component.
+Podemos usá-lo como diretiva, lembrando que diretiva é uma sintaxe personalizada que usamos para ativar nosso HTML.
+Directive-> Custom HTML syntax.
+
+Ao usar um componente como uma diretiva usamos o seletor de componente como uma tag HTML personalizada.
+<body>
+<pm-root></pm-root>
+</body>
+
+
+## Input Properties
+
+Decore uma propriedade de componente com o decorater @Input Sempre que pecisar de dados de entrada de seu container.
+
+## Output Properties
+
+Decore uma propriedade de componente com o decorater @Output Sempre que pecisar emitir eventos e eventuualmente passar dados para o seu container.
+Somente propriedades do tipo EventEmmiter devem ser marcadas com o decorator @Output.
+Use o argumento generico de EventEmmiter para especificar o tipo dos dados do evento e use a new para criar um novo evento.
+
+  @Output() ratingClicked: EventEmitter<string> =
+  new EventEmitter<string>();
+
+Use o componente aninhado como uma diretiva
+
+           <td><pm-star [rating]='product.starRating'
+              (ratingClicked)='onRatingClicked($event)'></pm-star></td>
+
+Use property Binding para passar dados ao component aninhado.[rating]
+Use event Binding para responder a eventos do component aninhado e use $ event para acessar os dados do evento passado ao component.
+
+

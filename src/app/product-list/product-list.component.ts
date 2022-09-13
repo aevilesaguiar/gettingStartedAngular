@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { from } from 'rxjs';
+import { IProduct } from './product';
+
+
 
 
 @Component({
@@ -6,15 +10,33 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
+
 export class ProductListComponent implements OnInit {
 
   pageTitle: string= 'Product List';
   imageWidth: number=50;
   imageMargin: number=2;
   showImage: boolean=false;
-  listFilter:string='cart';
 
-  products: any[]=[
+  private _listFilter: string='';
+  //getter e setter da variavel acima
+  get listFilter():string{
+    return this._listFilter;
+  }
+
+  set listFilter (value: string){
+    //o setter é executado sempre que um valor é atribuido a apropriedade associada
+    this._listFilter=value;
+
+    console.log('In setter', value);
+    this.filteredProducts=this.performFilter(value);
+  }
+
+  filteredProducts: IProduct[]=[];
+
+
+
+  products: IProduct[]=[
     {
       "productId": 1,
       "productName": "Leaf Rake",
@@ -72,10 +94,27 @@ export class ProductListComponent implements OnInit {
     this.showImage=!this.showImage;
   }
 
+  performFilter(filterBy:string):IProduct[]{
+    //este código começa convertendo os critérios de filtro em minusculos
+    filterBy=filterBy.toLocaleLowerCase();
+    //colocamos toLocaleLoewerCase para que não diferencia maiusculas de minusculas
+    return this.products.filter((product:IProduct)=>product.productName.toLocaleLowerCase().includes(filterBy));
+//o método includes() retorna true se o productName inclui a string de filtro definida
+//este codigo filtra nossa lista de produtos apenas para aqueles com um nome de produto que inclui a string de filtro
+//de lista. Se a string de filtros estive vazia , ele retornará todos os produtos.
+
+  }
+
 
   constructor() { }
 
   ngOnInit(): void {
+    //Aqui definimos a propriedade listFilter como carrinho
+    this.listFilter='cart';
+  }
+
+  onRatingClicked(message: string):void{
+    this.pageTitle='Product List: '+message;
   }
 
 

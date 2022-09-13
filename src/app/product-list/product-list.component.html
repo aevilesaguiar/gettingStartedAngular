@@ -39,7 +39,7 @@
           <!--para cada produto em nossa lista de produtos obteremos um elemento tr para uma
           linha da tabela e elementos td para os dados da tabela-->
           <!--adicionado tr para a linha da tabela-->
-          <tr *ngFor='let product of products'>
+          <tr *ngFor='let product of filteredProducts'>
             <!--inserimos um td ou elemento de dados de tabela para cada propriedade do produto
             que desejamos exibir na tabela precisamos combiná-los com os elemntos do cabeçalho da tabela-->
            <td> <img *ngIf='showImage' [src]='product.imageUrl'
@@ -47,10 +47,11 @@
                      [style.width.px]='imageWidth'
                      [style.margin.px]='imageMargin'></td>
             <td> {{ product.productName }}</td>
-            <td> {{ product.productCode | lowercase}}</td>
+            <td> {{ product.productCode | lowercase | convertToSpaces: '-'}}</td>
             <td> {{ product.releaseDate }}</td>
             <td> {{ product.price | currency :'USD':'symbol':'1.2-2' }}</td>
-            <td> {{ product.startRating }}</td>
+            <td><pm-star [rating]='product.starRating'
+              (ratingClicked)='onRatingClicked($event)'></pm-star></td>
           </tr>
         </tbody>
       </table>
