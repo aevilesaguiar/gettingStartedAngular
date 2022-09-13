@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { from } from 'rxjs';
-import { IProduct } from './product';
-import { ProductService } from './product.service';
-
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
+import { IProduct } from "./product";
+import { ProductService } from "./product.service";
 
 
 
@@ -12,64 +11,53 @@ import { ProductService } from './product.service';
   styleUrls: ['./product-list.component.css']
 })
 
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
 
   pageTitle: string= 'Product List';
   imageWidth: number=50;
   imageMargin: number=2;
   showImage: boolean=false;
+  errorMessage: string='';
+  sub!: Subscription;//a exclamação informa ao typescript que lidarenis com a atribuição um tempo depois
 
-  private _listFilter: string='';
-  //getter e setter da variavel acima
-  get listFilter():string{
+
+  private _listFilter = '';
+  get listFilter(): string {
     return this._listFilter;
   }
 
-  set listFilter (value: string){
-    //o setter é executado sempre que um valor é atribuido a apropriedade associada
-    this._listFilter=value;
 
-    console.log('In setter', value);
-    this.filteredProducts=this.performFilter(value);
+  set listFilter(value: string) {
+    this._listFilter = value;
+    this.filteredProducts = this.performFilter(value);
   }
 
-  filteredProducts: IProduct[]=[];
+  filteredProducts: IProduct[] = [];
+  products: IProduct[] = [];
 
+  constructor(private productService: ProductService) {}
 
-
-  products: IProduct[]=[];
-  //método
-  toggleImage(): void{
-    this.showImage=!this.showImage;
+  performFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.products.filter((product: IProduct) =>
+      product.productName.toLocaleLowerCase().includes(filterBy));
   }
 
-  performFilter(filterBy:string):IProduct[]{
-    //este código começa convertendo os critérios de filtro em minusculos
-    filterBy=filterBy.toLocaleLowerCase();
-    //colocamos toLocaleLoewerCase para que não diferencia maiusculas de minusculas
-    return this.products.filter((product:IProduct)=>product.productName.toLocaleLowerCase().includes(filterBy));
-//o método includes() retorna true se o productName inclui a string de filtro definida
-//este codigo filtra nossa lista de produtos apenas para aqueles com um nome de produto que inclui a string de filtro
-//de lista. Se a string de filtros estive vazia , ele retornará todos os produtos.
-
+  toggleImage(): void {
+    this.showImage = !this.showImage;
   }
 
-  //quando uma instancia de product-list.componente é criada
-//o injector Angular injeta na instancia de ProductService
-  constructor(private productService: ProductService) {
-
-
-  }
-
-  //o clico de vida OnInit fornece um local para executar qualquer inicialização de component
-  // e é um ótimo lugar para recuperar os dados para o modelo
   ngOnInit(): void {
-
-    //propriedade de produtos para os produtos devolvidos no nosso serviço
-    this.products=this.productService.getProducts();
-    //lista completa de serviços
-    this.filteredProducts=this.products;
-
+    this.sub = this.productService.getProducts().subscribe({
+      next: products => {
+        this.products = products;
+        this.filteredProducts = this.products;
+      },
+      error: err => this.errorMessage = err
+    });
+  }
+  ngOnDestroy(): void {
+    throw new Error("Method not implemented.");
   }
 
   onRatingClicked(message: string):void{

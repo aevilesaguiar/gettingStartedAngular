@@ -522,3 +522,191 @@ se quisermos que o serviço esteja disponivel apenas para o componente e seus co
   providers:[ProductService]
 })
 
+## Recuperando dados usando HTTP(Retrieving Data Using HTTP)
+
+
+A maioria dos aplicativos angular obtem  dados usando HTTP.
+
+
+## Observables e Extensões Reativas
+
+Extensões reativas para JS ou RxJS é uma biblioteca para compor dados usando uma sequencia de Observables e transformar esses dados usando um conjunto de operadores.
+
+O Angular usa Extensões reativas para trabalhar com dados, especialmente dados assincronos, como solicitações HTTP.
+
+
+Sincronos vs. Assincronos
+
+Sincronos é real time, ou seja em tempo real.
+A comunicação sincrona é como uma chamada telefonica. Você fala , eu imediatamente processo a informação e respondo.
+Com dados sincronos, o aplicativo solicita um valor e espera que ele chegue, é semelhante como chamar nosso método getProducts para obter a lista de produtos.
+
+A comunicação assincrona não espera uma resposta imediata. quando mando um email não preciso esperar uma resposta. 
+Quando recebo a resposta eu posso decidir quando processá-la.
+
+
+Do ponto de vista de nossos aplicativos, as solicitações HTTP são assincronas. 
+
+No angular , emitimos a solicitação get usando HTTP, mas o que usamos para configurar as notificações?
+
+Usamos as sequencia de RxJS Observable.
+
+- OBSERVABLE: uma sequencia Observable é ás vezes chamada de Observable stream (fluxo de observable), é uma
+coleção de itens ao longo do tempo. Portanto é uma coleção, mas ao contrário de uma matriz, não retém itens.
+Em vez disso , os itens emitidos podem ser observados ao longo do tempo.
+Um Observable não podemos classificá-los, ou percorré-los.
+
+O que um Observable faz?
+
+Um Observable não faz nada até que se inscreva(subscribe). Quando nos inscrevemos , o Observable começa a emitir notificações.
+
+Existem 3 tipos de notificações:
+
+- next:proxima notificação, que ocorre quando o próximo item é emitido e fornece o item emeitido.
+- error: Obsertvable emite uma notificação de erro e fornece as informações do erro o Observable então é concluído e nenhum outro  item é emitido.
+- complete: senão houver mais itens a serem emitidos o Observable emite uma notificação completa.
+
+Ou seja após inscrito um Observable emite o próximo erro ou notificações completas.
+
+Observable Pipe
+Podemos especificar uma espécie de pipeline usando um conjunto de operadores para transformar cada item emitido.
+
+Os observables tem mais de 100 operadores integrados não fictícios para mapear, filtrar , combinar e transformar dados.
+
+
+## Forma comum de Usar Observables
+
+Uma maneira comum de usar observables em um aplicativo angular , é primeiro iniciar o Observable(subscribe) com uma assinatura e depois o Pipe para cada item emitido por meio de um conjunto de operadores para modificar ou transformar o item. Em seguida , processamos as notificações do Observable. As tres notificações que o observable emite: nexr, error, complete. Por último paramos o Observable cancelando a inscrição(unsubscribe)
+
+Operadores e métodos Observables que podemos usar para criar Observables, os mesmos podem ser encontrados no pacote RxJS(range, map, filter...)
+
+Usamos a função de criação Observable chamada de range(intervalo) para criar um Observable que emite 10 números começando do 0;
+const source$: Observable <number>=range(0,10);
+
+Utilizamos o sufixo dolar para variaveis que referenciam Observables.
+
+Usamos o pipe para canalizar os itens emitidos através de vários operadores. neste exemplo mapeie e filtre
+source$.pipe(
+  map(x=>x*3),
+  filter(x=>x%2===0)
+).subscribe(x=>console.log(x));
+
+Subscribing to an Observable
+x.subscribe();
+x.subscribe(Observer)
+
+O objeto Observer observa o fluxo e responde a três tipos de notificações: next, error e complete.
+Usamos o objeto Observer para defiir funções de manipulador que são executadas nessas notificações.
+
+
+A maneira recomendada de usar http é encapsulá-lo em um serviço como nosso serviço de produto.
+
+  constructor(private http: HttpClient) { }
+
+Depois expô-lo e observá-lo para uso por qualquer componente que precide de dados do produto
+
+  //o serviço de produto retorna um Observable da matriz de produtos
+  getProducts(): Observable<IProduct[]> {
+    return this.http.get<IProduct[]>(this.productUrl)
+      .pipe(
+        tap(data => console.log('All: ', JSON.stringify(data))),
+        catchError(this.handleError)
+      );
+  }
+
+O componente simplesmente se inscreve no observable e em algum momento posterior , obtem os dados ou uma notificação.
+
+  ngOnInit(): void {
+    this.sub = this.productService.getProducts().subscribe({
+      next: products => {
+        this.products = products;
+        this.filteredProducts = this.products;
+      },
+      error: err => this.errorMessage = err
+    });
+  }
+
+## Checklist
+
+Antes de  podermos usar o serviço HTTP angular , algumas configurações são necessárias:
+
+Precisamos garantir que o provedor de Serviços esteja registrado
+no angular arquivo app.module.ts
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ProductListComponent,
+    ConvertToSpacesPipe,
+    StarComponent
+
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+  ->   HttpClientModule
+  ],
+Esse registro é feito para nós no HttpClientModule.
+Portanto tudo o que precisamos fazer é colocar HttpClient Module em nosso aplicativo
+
+Construa um serviço de acesso a dados para envolver as solicita
+ções HTTP.
+
+Defina uma dependencia para o Angular HTTP Client Service no construtor
+
+Crie um método para cada solicitação HTTP.
+No método, chame o método HTTP desejado, como get, e passe a URL para o servidor desejado.
+
+Use Generics para especificar o tipo de retorno de resposta. Isso transformará a resposta HTTP bruta no tipo especificado.
+
+Adicione o tratamento de erros no serviço conforme desejado usando o operador catchError.
+
+export class ProductService {
+
+  private productUrl='api/products/products.json'
+
+  constructor(private http: HttpClient) { }
+  getProducts(): Observable<IProduct[]> {
+    return this.http.get<IProduct[]>(this.productUrl)
+      .pipe(
+        tap(data => console.log('All: ', JSON.stringify(data))),
+        catchError(this.handleError)
+      );
+  }
+private handleError(err: HttpErrorResponse) {
+
+}
+
+
+
+Em qualquer component que precise de dados de um serviço de dados, chame o método subscribe para assinar o Observable
+
+Forcene uma função a ser executada quando o observable emite um item.Isso geralmente atribui uma propriedade aos dados retornados e, se essa propriedade estiver associada a um modelo, os dados recuperados aparecerão na visualização.
+
+Adicione uma função de erro para lidar com quaisquer erros retornados.
+
+  ngOnInit(): void {
+    this.sub = this.productService.getProducts().subscribe({
+      next: products => {
+        this.products = products;
+        this.filteredProducts = this.products;
+      },
+      error: err => this.errorMessage = err
+    });
+  }
+
+  O component deve cancelar a assinatuta de qualquer Observable o qual ele se inscreve.
+
+this.sub=this.getProducts().subscribe(...)
+
+Implement o ciclo de vida OnDestroy
+
+export class PLComponet implements OnInit, OnDestroy
+
+
+
+Implemente o ciclo de vida OnDestroy e use a variável de assinatura no método ngOnDestroy para cancelar assinatura. 
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
