@@ -9,8 +9,8 @@
 - 9 Services and Dependency Injection[ok]
 - 10 Retrieving Data Using HTTP[ok]
 - 11 Navigation and Routing Basics[ok]
-- 12 Navigation and Routing Additional Techniques
-- 13 Angular Modules
+- 12 Navigation and Routing Additional Techniques[ok]
+- 13 Angular Modules[ok]
 - 14 Building, Testing, and Deploying with the CLI
 - 15 Final Words
 Angular: Getting Started
@@ -768,4 +768,110 @@ O usuároi pode digitar o segmento de URL associado na barra de endereço após 
 
 
 
+## Técnicas Adicionais de Navegação e Roteamento
 
+
+Existem duas maneiras de um component ler os parametros de uma rota:
+-Se o componente só precisar ler o parametro da rota uma vez,usamos o snapcshot da rota para acessar o paramMap e obter o parametro.
+this.route.snapshot.paramMap.get('id');
+O snapshat nos dá informação sobre uma rota em um único ponto no tempo.Usamos essa rota quando ela não muda durante a exibição do componente.
+
+- Se o component precisa redesenhar os parametro conforme eles mudam usamos o paramMap Observable
+this.route.paramMap.subscribe(
+  params=>console.log(params.get('id'))
+);
+
+Observable: é uma coleção de itens que ocorrem ao longo do tempo. (Collection of items over time). Assinamos oObservable com subscribe para receber as notificações, toda vez que os parâmetros mudam. 
+
+Em ambos os casos a string especificada no get deve corresponder ao nome do parametro do path de configuração da rota.
+{
+  path: products/:id',
+  component: ProductDetailComponent}
+}
+
+## Protected Routes with guards (limitando acesso a uma rota)
+
+Podemos usar Guards(protetores) para limitar o acesso a algumas rotas.
+
+- CanActivate:  guarda a navegação de uma rota
+- CanDeactivate: para proteger a nevagação longe da rota atual
+- Resolve : para pré-buscar dados antes de ativar uma rota 
+- CanLoad: para evitar roteamento assícrono
+
+Para evitar erros null ou undefined em nossos templates usamos o operador de navegação segura(safe navigation operator '?')
+Ex: {{ product?.productName}}
+Ele só navega para o operador se ele tiver um valor não null ou undefined
+
+podemos usar o safe Navegaton operator para navegar com segurança por uma cadeia de propriedades também.
+{{product?.supplier?.companyName}}
+
+Use a diretiva ngIf para remover um conjunto inteiro de elementos de um template se o valor de uma propriedade for null ou undefined.
+
+<div  *ngIf='product'>
+<div>Name:</div>
+<div>product.productName</div>
+</div>>
+
+Podemos 
+passar qualquer numero de parametros para uma rota:
+
+app.module.ts
+     { path:'products/id', component:ProductListComponent  },
+product-list.component.html
+<a [routerLink]="['/products', product.productId]">{{product.productNme}}</a>
+product-detail.component.ts
+import{ActivatedRoute} from'@angular/route';
+
+constructor (provate route: ActivatedRoute){
+  console.log(this.route.snapshot.paramMap.get('id'));
+}
+
+Para ativar uma rota com código use o serviço de roteador e defina-o como uma dependencia do construtor.
+
+## Angular Modules
+
+Um módulo angular é uma classe com um decorator NgModule. Seu objetivo é organizar as partes do nosso aplicativo, organizar em blocos coesos de funcionalidade e estender nosso aplicativo com recursos de bibliotecas externas. 
+Modulos angular fornecem o ambiente para resolver diretivas e pipes em nossos modelos de componentes.
+
+NModules são uma ótima maneira d agregar seletivamente classes de outros módulos e reexportá-los em um módulo de conveniência consolidado.
+
+Um módulo angular declara cada componete, diretiva e pipe que gerencia. Cada diretiva de componente e pipe que criamos pertencem a um módulo angular.Um módulo angular inicializa nosso componente de aplicativo raiz(bootstrap)
+O angular module pode exportar componentes, diretivas, pipes e até outros modulos angular.Disoonibilizando -os para outros módulos importar  e usar. Quando digo importações, quero dizer adicionado a matriz de importações de decorater NgModule.
+
+Angular module é como se fosse uma caixa , onde declaramos cada um de nossos componentes. AppComponent, productList-component, productDetailComponent, welcomecomponent, se esses componentes precisam de uma funcionalidade , essa funcionalidade precisa ser definida em angula module.
+
+ex: se preciso do serviço de roteador e rotas então preciso declarar RouterModule
+    se usar ngModel[(ngModel)]então preciso declarar FormsModule
+    se preciso de uma lista e o component usa ngFor e ngIf então preciso declarar BrowserModule
+    se preciso usar o PIPE então preciso declarar o pipe
+
+De uma forma geral o móduloAngular fornece um ambiente de resolução de modelo para cada componente que pertence ao módulo. Ele fornece uma maneira para o compilador encontrar e resolver a sintaxe angular que colocamos no HTML.
+
+Cada aplicativo angular tem pelo o menos um módulo Angular, chamado de app root(aplicativo raiz) ou AppModule, e também tem pelo o menos um componente de aplicativo raiz, ou appComponent. O appModule inicializa o AppComponent para fornecer a diretiva usada no arquivo index.html, ex: 'pm-root';
+
+A matriz de bootstrap do decorator @NgModule define o componente que é o ponto de partida do aplicativo, este é o component que é carregado quando o aplicativo é iniciado. A MATRIZ DE BOOTSTRAP DEVE SER USADA APENAS NO MÓDULO DE APLICATIVO RAIZ.
+
+
+Exports Array
+
+A matriz de exportação do decorator @NgModule nos permite compartilhar componetes , diretivas e pipes de um modulo angular com outros modulos. 
+
+
+RouterModule.forRoot: registra o provedor de serviço do roteador, declara as diretivas do roteador e expõe nossas rotas configuradas.  
+
+RouterModule.forChild: declara diretivas de rotas e expões configuração de rotas;
+
+
+## Shared Module(modulo compartilhado)
+
+O objetivo do módulo compartilhado é organizar um conjunto de peças comumente usadas em um modulo e exportar essas peças que que estejam disponíveis para qualquer modulo que importe o modulo compartilhado. 
+
+
+Criar um module numa  pasta existente:
+ng g m shared/shared --flat -m products/product.module
+-- flat : já temos a pasta compartilhada, só queremos incluir o module então usamos --flat. Dessa forma a CLI não criará outra pasta
+- m: queremos importar este modulo para o ProductModule então usamos -m e especificamos o caminho e o nome do modulo products-list/product.module
+
+
+O objetivo de 
+AppModule é orquestrar o aplicativo como um todo.

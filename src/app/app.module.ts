@@ -1,15 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { ProductListComponent } from './product-list/product-list.component';
-import { ConvertToSpacesPipe } from './product-list/convert-to-spaces.pipe';
-import { StarComponent } from './shared/star.component';
-import { ProductDetailComponent } from './product-list/product-detail.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { RouterModule } from '@angular/router';
+import { ProductModule } from './product-list/product.module';
 
 
 //identificamos a classe como um módulo anexando o decorator @NgModule e passando os
@@ -20,23 +16,19 @@ import { RouterModule } from '@angular/router';
   //
   declarations: [
     AppComponent,
-    ProductListComponent,
-   WelcomeComponent,
-    ConvertToSpacesPipe,
-    StarComponent,
-    ProductDetailComponent
+    WelcomeComponent,
+
 
   ],
   imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule, RouterModule.forRoot([
-      { path:'products', component:ProductListComponent  },
-      { path:'products/id', component:ProductDetailComponent  },
+    BrowserModule, //registra provedores de serviços de aplicativos criticos, importa e exporta commumModules que declarara diretivas como ngIf e ngFor
+    HttpClientModule,//provedor de serviços angular HttpClient
+    RouterModule.forRoot([
+
       { path:'welcome', component:WelcomeComponent  },
       { path:'', redirectTo: 'welcome', pathMatch:'full'  },
       { path:'**', redirectTo: 'welcome', pathMatch:'full' }
-    ])
+    ]), ProductModule
   ],
   //a matriz bootstrap define o componente de inicialização do aplicativo
   //que é o nosso AppComponent
