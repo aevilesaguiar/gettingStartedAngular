@@ -873,5 +873,23 @@ ng g m shared/shared --flat -m products/product.module
 - m: queremos importar este modulo para o ProductModule então usamos -m e especificamos o caminho e o nome do modulo products-list/product.module
 
 
-O objetivo de 
-AppModule é orquestrar o aplicativo como um todo.
+O objetivo de AppModule é orquestrar o aplicativo como um todo.
+
+## Overview
+
+Gerando um um new Angular app -> ng new
+Servindo a aplicação ng serve
+gerando o codigo ng generate
+testando a aplicação ng test
+Building a aplicação ng build
+
+Os comandos angular CLI são acessandos usando ng, <command> : nome do comando, argumentos e opções prefixados com --
+
+ng <command> <args>--<options>
+
+instalar angular cli globalmente: npm install -g @angular/cli
+
+ng help : mostra a lista de todos os comandos
+
+ng update podemos atualizar um projeto para a versão mais reente do angular
+
