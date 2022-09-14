@@ -893,3 +893,108 @@ ng help : mostra a lista de todos os comandos
 
 ng update podemos atualizar um projeto para a versão mais reente do angular
 
+
+## Observações
+
+O comando ng serve compila o aplicativo transformando o nosso template e código Typescript  em javaScript.
+Ele gera pacotes de aplicativos a partir desse JS.Ele inicia um servidor web local que escuta na porta 4200.
+
+ng serve -o -> open abra o navegador padrão
+
+lista de pacotes gerados:
+
+Initial Chunk Files   | Names         |  Raw Size
+vendor.js             | vendor        |   1.77 MB | - > contem as bibliotecas angular e de teerceiros
+polyfills.js          | polyfills     | 318.06 kB | ->  polifils declarados no arquivo polyfil.ts, tem o suporte a vários navegadores e recursos
+styles.css, styles.js | styles        | 210.09 kB |-> possui os styles
+main.js               | main          |  48.05 kB |-> contem nosso codigo de aplicativo e runtime.js e o carregador de webpack
+runtime.js            | runtime       |   6.52 kB |
+
+
+webpack é a tecnologia por trás do processo de compilação e agrupamento.
+
+## gerando código
+
+component-> ng g c <name>
+directives-> ng g d <name>
+route guards-> ng g g <name>
+interfaces-> ng g i <name>
+modules-> ng g m <name>
+pipes-> ng g p <name>
+services-> ng g s <name>
+
+## Principais comandos da cli de referencia
+
+ng help-> mostra a documentação da CLI
+ng new-> cria uma nova aplicação angular
+ng serve-> 
+
+
+## testing Application
+
+Testar nosso código angular é muito importante.
+
+ng test: Com esse comando o angular gera vários testes para nós.
+
+Para sair do teste  é necessário dar ctrl+c 
+
+## Building da Aplicação
+
+ng build: esse comando ajuda a preparar o seu aplicativo para implantação.
+Quando implantamos em produção queremos que nossos pacotes sejam os menores possíveis, isso significa que queremos minificar (minify/uglify).
+Ou seja fazemos o tree Shaking( agitação da árvore) onde sacodimos nosso código para eliminar quaisquer galho morto, o que significa que será removido qualquer parte não utilizada.
+
+✔ Index html generation complete.
+
+Initial Chunk Files           | Names         |  Raw Size | Estimated Transfer Size
+main.0f235fe02d748aba.js      | main          | 116.38 kB |                34.77 kB
+polyfills.3495ce0a0cb55688.js | polyfills     |  33.08 kB |                10.67 kB
+runtime.5747c2d0904db68f.js   | runtime       |   1.05 kB |               599 bytes
+styles.ef46db3751d8e999.css   | styles        |   0 bytes |                       -
+                              | Initial Total | 150.50 kB |                46.03 kB
+
+Quando a compilação estiver concluída , veremos a lista de bundles gerados. E agora aparece o hash, isso é feito para bloquear o cache. 
+Toda vez que alteramos algo em nosso código ele precisa ser reimplantado no servidor. Ou seja quando alteramos os arquivos o vavegador baixará a versão mais recente por que os nomes dos arquivos não corresponderão ás versões em cache.
+
+Quando for concluido o processo de compilação de ng , teremos uma pasta dist em nosso projeto. Se abrirmos a pasta veremos nossos pacotes reais. Por padrão , o comando build não gera arquivos de mapa. Todo o arquivo foi minificado. E agora podemos implantar o código no servidor.
+
+## Review
+
+O que é um component?
+
+Component= template+ class(properties and methods)+metadata
+Descobrimos que um component é uma view definida com um modelo, uma lógica definida com uma classe e metadados definidos com decorator.
+
+por que precisamos de um service?
+Implementat funcionalidades independentes de qualquer componente específico, compartilhar dados e lógica entre componentes e encapsular interações externas como acesso a dados.
+
+Você usa npm em Angular para: Instalando pacotes e executando scripts
+
+Qual é a maneira recomendada atual de registrar um serviço com o injetor Angular raiz?Configurando a providedIn propriedade do Injectable decorador para o serviço.
+Qual é o propósito de um modelo Angular?Forneça o HTML para a interface do usuário
+O benefício de encapsular um estilo de componente é que o estilo: Aplica-se apenas ao modelo do componente
+Qual das opções a seguir é a sintaxe correta para a ngFordiretiva ?  *ngFor='let product of products'
+Você poderia pensar em um observável como:Um fluxo cujos itens chegam de forma assíncrona ao longo do tempo
+Qual diretiva de roteamento é usada para vincular uma rota a uma ação do usuário?RouterLink
+A finalidade do @Inputdecorador em um componente aninhado é:Expor uma propriedade que um contêiner pode definir usando a associação de propriedade
+Qual das opções a seguir é a sintaxe correta para ligação bidirecional(TWO-WAY DATA BINDING)? [(ngModel)]='listFilter'
+O objetivo da classe de um componente é:Forneça as propriedades e métodos necessários para a exibição
+Um módulo ES 2015 é:Um arquivo com pelo menos um exportouimport
+Uma classe quer usar um serviço. Onde você define a dependência para o serviço injetado?No construtor da classe
+Um dos principais benefícios de uma interface é que uma interface pode ser usada como:Um tipo de dados para digitar fortemente qualquer objeto
+Qual é o propósito de um guarda de rota?Para impedir a navegação de ou para uma rota com base em critérios
+Qual das opções a seguir é a sintaxe de interpolação angular correta?{{pageTitle}}
+
+Quando ocorre o OnChanges evento do ciclo de vida? Quando o valor de uma propriedade vinculada a dados é @Inputalterado
+
+O que o parâmetro genérico neste código faz?
+
+this.http.get<IProduct[]>(this.productUrl)
+Transforma a resposta HTTP bruta em uma variedade de produtos
+
+Qual é o objetivo da RouterOutlet diretiva?Identifique onde colocar a visualização do componente roteado
+
+A seguinte sintaxe é:<button (clique)='toggleImage()'/>
+Vinculação de evento do click evento ao toggleImage método
+
+O que é um componente angular?Modelo + Classe + Metadados
